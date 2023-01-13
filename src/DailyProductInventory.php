@@ -16,6 +16,11 @@ class DailyProductInventory
     public Admin $admin;
 
     /**
+     * @var CheckoutOrder
+     */
+    public CheckoutOrder $checkout;
+
+    /**
      * Create a new DailyProductInventory instance.
      * 
      */
@@ -23,6 +28,8 @@ class DailyProductInventory
     {
 
         $this->admin = new Admin();
+
+        $this->checkout = new CheckoutOrder();
     }
 
     /**
@@ -30,7 +37,7 @@ class DailyProductInventory
      * 
      * @return void
      */
-    private static function script_activation()
+    private static function activationScript()
     {
 
         $error = 'Required <b>WooCommerce</b> plugin activate.';
@@ -56,7 +63,7 @@ class DailyProductInventory
     public static function activate()
     {
 
-        self::script_activation();
+        self::activationScript();
     }
 
     /**
