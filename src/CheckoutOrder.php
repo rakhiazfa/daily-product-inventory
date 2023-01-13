@@ -30,15 +30,78 @@ class CheckoutOrder
     public function registerCheckoutOrderScripts()
     {
         add_action(
+            'wp_footer',
+            array($this, 'loadCheckoutAssets'),
+        );
+
+        add_action(
+            'woocommerce_review_order_before_payment',
+            array($this, 'reviewOrderBeforePayment'),
+        );
+
+        add_action(
+            'woocommerce_checkout_process',
+            array($this, 'checkoutProcess'),
+        );
+
+        add_action(
             'woocommerce_order_status_changed',
             array($this, 'orderStatusChanged'),
             10,
-            3
+            3,
         );
     }
 
+    /**
+     * Load checkout assets.
+     * 
+     * @return void
+     */
+    public function loadCheckoutAssets()
+    {
+        wp_enqueue_script(
+            'dpi_script',
+            plugins_url('/assets/js/dpi-app.js', DPI_FILE),
+        );
+    }
+
+    /**
+     * Handle review order before payment.
+     * 
+     * @return void
+     */
+    public function reviewOrderBeforePayment()
+    {
+        woocommerce_form_field('dpi_pickup_date', [
+            'label' => 'Pickup Date',
+            'required' => true,
+            'type' => 'date',
+            'class' => 'dpi-pickup-date',
+        ], date('Y-m-d'));
+    }
+
+    /**
+     * Checkout process.
+     * 
+     * @return void
+     */
+    public function checkoutProcess()
+    {
+    }
+
+    /**
+     * Handle order status changed.
+     * 
+     * @param mixed $order_id
+     * @param mixed $old_status
+     * @param mixed $new_status
+     * 
+     * @return void
+     */
     public function orderStatusChanged($order_id, $old_status, $new_status)
     {
+        add_post_meta($order_id, 'dpi_pickup_date', $_POST['dpi_pickup_date']);
+
         /**
          * Days
          * 
@@ -59,7 +122,7 @@ class CheckoutOrder
          * 
          */
 
-        if ($new_status == 'processing') {
+        if ($new_status == 'processing' || $new_status == 'on-hold') {
 
             $order = wc_get_order($order_id);
 
@@ -68,7 +131,7 @@ class CheckoutOrder
              * 
              */
 
-            $date = DateTime::createFromFormat('d/m/Y', get_post_meta($order_id, 'jckwds_date', true));
+            $date = DateTime::createFromFormat('Y-m-d', get_post_meta($order_id, 'dpi_pickup_date', true));
 
             $day = strtolower($date->format('l'));
 

@@ -50,15 +50,14 @@ class Admin
      */
     public function loadAdminAssets()
     {
-
         wp_enqueue_style(
             'dpi_admin_style',
-            plugins_url('/assets/css/admin-app.css', DPI_FILE),
+            plugins_url('/assets/css/dpi-admin-app.css', DPI_FILE),
         );
 
         wp_enqueue_script(
             'dpi_admin_script',
-            plugins_url('/assets/js/admin-app.js', DPI_FILE),
+            plugins_url('/assets/js/dpi-admin-app.js', DPI_FILE),
         );
     }
 

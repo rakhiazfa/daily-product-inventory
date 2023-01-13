@@ -30,6 +30,13 @@ class DailyProductInventory
         $this->admin = new Admin();
 
         $this->checkout = new CheckoutOrder();
+
+        /**
+         * Inherit default timezone.
+         * 
+         */
+
+        date_default_timezone_set(wp_timezone_string());
     }
 
     /**
