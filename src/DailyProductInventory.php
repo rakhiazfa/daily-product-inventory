@@ -46,13 +46,6 @@ class DailyProductInventory
 
             die($error);
         }
-
-        $error = 'Required <b>WooCommerce Delivery Slots by Iconic</b> plugin activate.';
-
-        if (!class_exists('Iconic_WDS')) {
-
-            die($error);
-        }
     }
 
     /**
