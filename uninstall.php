@@ -13,3 +13,7 @@ defined('WP_UNINSTALL_PLUGIN') or die();
 
 
 global $wpdb;
+
+// Delete All Post Meta
+
+$wpdb->query("DELETE FROM $wpdb->postmeta WHERE meta_key LIKE 'dpi\_%'");
