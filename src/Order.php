@@ -5,21 +5,21 @@ namespace GreatWebsiteStudio;
 use DateTime;
 
 /**
- * Checkout Class
+ * Order Class
  * 
  * @author Great Website Studio
  */
 
-class CheckoutOrder
+class Order
 {
     /**
-     * Create a new CheckoutOrder instance.
+     * Create a new Order instance.
      * 
      */
     public function __construct()
     {
 
-        $this->registerCheckoutOrderScripts();
+        $this->registerOrderScripts();
     }
 
     /**
@@ -27,66 +27,14 @@ class CheckoutOrder
      * 
      * @return void
      */
-    public function registerCheckoutOrderScripts()
+    public function registerOrderScripts()
     {
-        add_action(
-            'wp_footer',
-            array($this, 'loadCheckoutAssets'),
-        );
-
-        add_action(
-            'woocommerce_review_order_before_payment',
-            array($this, 'reviewOrderBeforePayment'),
-        );
-
-        add_action(
-            'woocommerce_checkout_process',
-            array($this, 'checkoutProcess'),
-        );
-
         add_action(
             'woocommerce_order_status_changed',
             array($this, 'orderStatusChanged'),
             10,
             3,
         );
-    }
-
-    /**
-     * Load checkout assets.
-     * 
-     * @return void
-     */
-    public function loadCheckoutAssets()
-    {
-        wp_enqueue_script(
-            'dpi_script',
-            plugins_url('/assets/js/dpi-app.js', DPI_FILE),
-        );
-    }
-
-    /**
-     * Handle review order before payment.
-     * 
-     * @return void
-     */
-    public function reviewOrderBeforePayment()
-    {
-        woocommerce_form_field('dpi_pickup_date', [
-            'label' => 'Pickup Date',
-            'required' => true,
-            'type' => 'date',
-            'class' => 'dpi-pickup-date',
-        ], date('Y-m-d'));
-    }
-
-    /**
-     * Checkout process.
-     * 
-     * @return void
-     */
-    public function checkoutProcess()
-    {
     }
 
     /**
@@ -100,10 +48,10 @@ class CheckoutOrder
      */
     public function orderStatusChanged($order_id, $old_status, $new_status)
     {
-        add_post_meta($order_id, 'dpi_pickup_date', $_POST['dpi_pickup_date']);
+        add_post_meta($order_id, 'dpi_pickup_date', $_COOKIE['dpi_pickup_date'] ?? "");
 
         /**
-         * Days
+         * Convert day to post meta.
          * 
          */
 
@@ -131,9 +79,15 @@ class CheckoutOrder
              * 
              */
 
-            $date = DateTime::createFromFormat('Y-m-d', get_post_meta($order_id, 'dpi_pickup_date', true));
+            $date = get_post_meta($order_id, 'dpi_pickup_date', true) ?? false;
+            $day = null;
 
-            $day = strtolower($date->format('l'));
+            if ($date) {
+
+                $date = DateTime::createFromFormat('Y-m-d', get_post_meta($order_id, 'dpi_pickup_date', true));
+
+                $day = strtolower($date->format('l'));
+            }
 
             /**
              * Get order items.
@@ -149,7 +103,10 @@ class CheckoutOrder
 
                 $oldQuantity = (int) get_post_meta($productId, $days[$day], true);
 
-                update_post_meta($productId, $days[$day], $oldQuantity - $itemQuantity);
+                if (isset($days[$day])) {
+
+                    update_post_meta($productId, $days[$day], $oldQuantity - $itemQuantity);
+                }
             }
         }
     }

@@ -16,9 +16,19 @@ class DailyProductInventory
     public Admin $admin;
 
     /**
-     * @var CheckoutOrder
+     * @var Shop
      */
-    public CheckoutOrder $checkout;
+    public Shop $shop;
+
+    /**
+     * @var Cart
+     */
+    public Cart $cart;
+
+    /**
+     * @var Order
+     */
+    public Order $checkout;
 
     /**
      * Create a new DailyProductInventory instance.
@@ -29,7 +39,11 @@ class DailyProductInventory
 
         $this->admin = new Admin();
 
-        $this->checkout = new CheckoutOrder();
+        $this->shop = new Shop();
+
+        $this->cart = new Cart();
+
+        $this->checkout = new Order();
 
         /**
          * Inherit default timezone.
