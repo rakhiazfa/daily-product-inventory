@@ -69,6 +69,17 @@
             });
         });
 
+        /**
+         * Handle pickup time changes.
+         *
+         */
+
+        $("#dpi_pickup_time").on("change", function (e) {
+            document.cookie = `dpi_pickup_time=${e.target.value}; path=/;`;
+        });
+
+        //
+
         $("#dpi_pickup_date").on("click", function () {
             this.showPicker();
         });
@@ -78,9 +89,24 @@
          *
          */
 
-        var today = new Date().toISOString().split("T")[0];
+        var todayInstance = new Date();
+
+        var now = new Date();
+
+        if (parseInt(now.getHours()) > 14 || parseInt(now.getHours()) === 0) {
+            todayInstance.setDate(todayInstance.getDate() + 1);
+        }
+
+        var today = todayInstance.toISOString().split("T")[0];
 
         $("#dpi_pickup_date").attr("min", today);
+
+        if (
+            (parseInt(now.getHours()) > 14 || parseInt(now.getHours()) === 0) &&
+            !getCookie("dpi_pickup_date")
+        ) {
+            document.cookie = `dpi_pickup_date=${today}; path=/;`;
+        }
 
         /**
          * Set detault pickup date.
@@ -92,6 +118,8 @@
         }; path=/;`;
 
         $("#dpi_pickup_date").attr("value", getCookie("dpi_pickup_date"));
+
+        $("#dpi_pickup_time").val(getCookie("dpi_pickup_time"));
 
         /**
          * Display daily stock quantity.

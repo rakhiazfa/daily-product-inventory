@@ -80,6 +80,16 @@ class Shop
             'id' => 'dpi_pickup_date',
             'class' => 'dpi_pickup_date',
         ));
+
+        woocommerce_form_field('dpi_pickup_time', array(
+            'type' => 'select',
+            'id' => 'dpi_pickup_time',
+            'class' => 'dpi_pickup_time',
+            'options'     => array(
+                '10:00|11:00' => __('10:00 - 11:00'),
+                '01:00:02:00' => __('01:00 - 02:00')
+            ),
+        ));
     }
 
     /**
