@@ -35,6 +35,11 @@ class Order
             10,
             3,
         );
+
+        add_action(
+            'woocommerce_thankyou',
+            array($this, 'thankyou')
+        );
     }
 
     /**
@@ -110,5 +115,15 @@ class Order
                 }
             }
         }
+    }
+
+    /**
+     * @return void
+     */
+    public function thankyou()
+    {
+        echo "<p>Pickup Date : " . $_COOKIE['dpi_pickup_date'] ?? "" . "</p>";
+        echo "<br>";
+        echo "<p>Pickup Time : " . $_COOKIE['dpi_pickup_time'] ?? "" . "</p>";
     }
 }
