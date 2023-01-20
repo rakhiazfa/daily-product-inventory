@@ -49,6 +49,7 @@ class Order
     public function orderStatusChanged($order_id, $old_status, $new_status)
     {
         add_post_meta($order_id, 'dpi_pickup_date', $_COOKIE['dpi_pickup_date'] ?? "");
+        add_post_meta($order_id, 'dpi_pickup_time', $_COOKIE['dpi_pickup_time'] ?? "");
 
         /**
          * Convert day to post meta.
